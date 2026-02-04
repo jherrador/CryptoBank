@@ -1,3 +1,14 @@
 {
-  "solidity.compileUsingRemoteVersion": "v0.8.30+commit.73712a01"
+  "solidity.compileUsingRemoteVersion": "v0.8.30+commit.73712a01",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "[solidity]": {
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": true
+  }
 }
