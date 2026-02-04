@@ -14,6 +14,7 @@ contract CryptoBankTest is Test{
     bank = new CryptoBank(initialMaxBalance);
   }
 
+  // Deposit Tests
   function testDeposit() public payable{
     uint256 initialDeposit = 1 ether;
     ICryptoBank(address(bank)).depositEther{value: initialDeposit}();
@@ -25,6 +26,36 @@ contract CryptoBankTest is Test{
     assertEq(bank.userBalance(address(this)), initialDeposit*2);
   }
 
+  function testDepositMultipleUsers() public {
+    address wallet1 = address(0x1);
+    address wallet3 = address(0x3);
+    uint256 depositWallet1 = 2 ether;
+    uint256 depositWallet3 = 5 ether;
+
+    vm.deal(wallet1, 100 ether);
+    vm.deal(wallet3, 100 ether);
+
+    vm.prank(wallet1);
+    ICryptoBank(address(bank)).depositEther{value: depositWallet1}();
+    assertEq(bank.userBalance(wallet1), depositWallet1);
+    
+    vm.prank(wallet3);
+    ICryptoBank(address(bank)).depositEther{value: depositWallet3}();
+    assertEq(bank.userBalance(wallet3), depositWallet3);
+
+    assertEq(address(bank).balance, depositWallet1 + depositWallet3);
+
+  }
+
+  function testRevertDepositMaxBalanceExceeded() public {
+    vm.startPrank(msg.sender);
+    uint256 amount = bank.maxBalance() + 1;
+    vm.expectRevert("MaxBalance exceed");
+    ICryptoBank(address(bank)).depositEther{value: amount }();
+    vm.stopPrank();
+  }
+
+  // Withdraw Tests
   function testWithdraw() public {
     vm.startPrank(msg.sender);
     uint256 initialDeposit = 1 ether;
@@ -37,31 +68,17 @@ contract CryptoBankTest is Test{
     vm.stopPrank();
   }
 
-  function testWithdrawFromDifferentAccount() public {
+  function testRevertWithdrawExceededBankBalance() public {
+    vm.startPrank(msg.sender);
     uint256 initialDeposit = 1 ether;
-    address depositWallet = address(0x1);
-    address walletNonDeposits = address(0x3);
-
-    vm.deal(depositWallet, 100 ether);
-    vm.deal(walletNonDeposits, 100 ether);
-
-    console2.log("Balance=>", depositWallet.balance);
-    vm.prank(depositWallet);
     ICryptoBank(address(bank)).depositEther{value: initialDeposit}();
-    assertEq(bank.userBalance(depositWallet), initialDeposit);
-    assertEq(bank.userBalance(walletNonDeposits), 0);
 
-    vm.prank(walletNonDeposits);
     vm.expectRevert("Amount exceeded the available Balance");
-    ICryptoBank(address(bank)).withdrawEther(initialDeposit);
-
-    assertEq(address(bank).balance, initialDeposit);
-    assertEq(bank.userBalance(depositWallet), initialDeposit);
-    assertEq(bank.userBalance(walletNonDeposits), 0);
-
+    ICryptoBank(address(bank)).withdrawEther(initialDeposit + 1 ether);
+    vm.stopPrank();
   }
 
-  function testWithdrawMultipleUsers() public {
+  function testRevertWithdrawAvailableUserBalanceExceeded() public {
     address wallet1 = address(0x1);
     address wallet3 = address(0x3);
     uint256 depositWallet1 = 2 ether;
@@ -90,23 +107,31 @@ contract CryptoBankTest is Test{
 
   }
 
-  function testMaxBalanceExceededOnDeposit() public {
-    vm.startPrank(msg.sender);
-    uint256 amount = bank.maxBalance() + 1;
-    vm.expectRevert("MaxBalance exceed");
-    ICryptoBank(address(bank)).depositEther{value: amount }();
-    vm.stopPrank();
-  }
-  function testAvailableBalanceExceededOnWithdraw() public {
-    vm.startPrank(msg.sender);
+  function testRevertNotAllowedWithdrawFromDifferentAccount() public {
     uint256 initialDeposit = 1 ether;
-    ICryptoBank(address(bank)).depositEther{value: initialDeposit}();
+    address depositWallet = address(0x1);
+    address walletNonDeposits = address(0x3);
 
+    vm.deal(depositWallet, 100 ether);
+    vm.deal(walletNonDeposits, 100 ether);
+
+    console2.log("Balance=>", depositWallet.balance);
+    vm.prank(depositWallet);
+    ICryptoBank(address(bank)).depositEther{value: initialDeposit}();
+    assertEq(bank.userBalance(depositWallet), initialDeposit);
+    assertEq(bank.userBalance(walletNonDeposits), 0);
+
+    vm.prank(walletNonDeposits);
     vm.expectRevert("Amount exceeded the available Balance");
-    ICryptoBank(address(bank)).withdrawEther(initialDeposit + 1 ether);
-    vm.stopPrank();
+    ICryptoBank(address(bank)).withdrawEther(initialDeposit);
+
+    assertEq(address(bank).balance, initialDeposit);
+    assertEq(bank.userBalance(depositWallet), initialDeposit);
+    assertEq(bank.userBalance(walletNonDeposits), 0);
+
   }
 
+  // MaxBalance Tests
   function testSetMaxBalance() public {
     uint256 newMaxBalance = 5 ether;
 
