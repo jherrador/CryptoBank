@@ -29,14 +29,10 @@ No tokens, no interest, no lending — just Ether in and Ether out.
 
 ```text
 .
-├── .github/
 ├── lib/
 ├── script/
 ├── src/
 ├── test/
-├── README.md
-├── foundry.toml
-└── foundry.lock
 ```
 
 ---
