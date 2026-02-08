@@ -27,20 +27,27 @@ contract CryptoBankTest is Test {
         assertEq(bank.userBalance(address(this)), initialDeposit * 2);
     }
 
-    function testDepositMultipleUsers() public {
+    function testDepositMultipleUsers(uint256 amountEther1_, uint256 amountEther2_) public {
         address wallet1 = address(0x1);
         address wallet3 = address(0x3);
-        uint256 depositWallet1 = 2 ether;
-        uint256 depositWallet3 = 5 ether;
+        uint256 depositWallet1 = amountEther1_ / 1 gwei;
+        uint256 depositWallet3 = amountEther2_ / 1 gwei;
 
-        vm.deal(wallet1, 100 ether);
-        vm.deal(wallet3, 100 ether);
+        vm.deal(wallet1, depositWallet1);
+        vm.deal(wallet3, depositWallet3);
+
+        uint256 newMaxBalance = depositWallet1> depositWallet3 ? depositWallet1 : depositWallet3;
+
+        ICryptoBank(address(bank)).setMaxBalance(newMaxBalance);
+        assertEq(bank.maxBalance(), newMaxBalance);
 
         vm.prank(wallet1);
+        if(depositWallet1 == 0) vm.expectRevert("Eth amount cannot be Zero");
         ICryptoBank(address(bank)).depositEther{value: depositWallet1}();
         assertEq(bank.userBalance(wallet1), depositWallet1);
 
         vm.prank(wallet3);
+        if(depositWallet3 == 0) vm.expectRevert("Eth amount cannot be Zero");
         ICryptoBank(address(bank)).depositEther{value: depositWallet3}();
         assertEq(bank.userBalance(wallet3), depositWallet3);
 

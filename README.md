@@ -1,66 +1,91 @@
-## Foundry
+# 🏦 CryptoBank
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+![Ethereum](https://img.shields.io/badge/Ethereum-Blockchain-3C3C3D?logo=ethereum&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-%5E0.8.x-363636?logo=solidity)
+![Foundry](https://img.shields.io/badge/Built%20with-Foundry-black)
+![License](https://img.shields.io/badge/License-Unlicensed-lightgrey)
 
-Foundry consists of:
+CryptoBank is a simple decentralized banking smart contract built on Ethereum.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+It allows users to **deposit Ether into a smart contract and withdraw it later**, simulating the most basic behavior of a crypto bank.
 
-## Documentation
+This project is intended for **educational and learning purposes**, focusing on Solidity fundamentals and Ether handling.
 
-https://book.getfoundry.sh/
+---
 
-## Usage
+## 🧠 Overview
 
-### Build
+CryptoBank provides a minimal implementation of a smart contract that:
 
-```shell
-$ forge build
+- Accepts Ether deposits  
+- Keeps track of user balances  
+- Allows users to withdraw their own Ether  
+
+No tokens, no interest, no lending — just Ether in and Ether out.
+
+---
+
+## 📦 Project Structure
+
+```text
+.
+├── .github/
+├── lib/
+├── script/
+├── src/
+├── test/
+├── README.md
+├── foundry.toml
+└── foundry.lock
 ```
 
-### Test
+---
 
-```shell
-$ forge test
+## 🛠 Tech Stack
+
+- **Solidity** — Smart contract language  
+- **Foundry** — Ethereum development framework  
+- **Forge** — Build and testing tool  
+- **Ethereum** — Blockchain platform  
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Foundry**
+
+---
+
+## 🧪 Build and Test
+
+### Compile contracts
+
+```bash
+forge build
 ```
 
-### Format
+### Run tests
 
-```shell
-$ forge fmt
+```bash
+forge test
 ```
 
-### Gas Snapshots
+---
 
-```shell
-$ forge snapshot
-```
+## 🧩 Smart Contract Behavior
 
-### Anvil
+The smart contract allows users to:
 
-```shell
-$ anvil
-```
+- Deposit Ether into the contract
+- Store balances mapped to user addresses
+- Withdraw their Ether at any time
 
-### Deploy
+Each user can only withdraw their own balance.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+---
 
-### Cast
+## 👤 Author
 
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Developed by **jherrador** as a learning project for Ethereum smart contracts.
