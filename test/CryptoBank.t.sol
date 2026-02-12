@@ -36,18 +36,18 @@ contract CryptoBankTest is Test {
         vm.deal(wallet1, depositWallet1);
         vm.deal(wallet3, depositWallet3);
 
-        uint256 newMaxBalance = depositWallet1> depositWallet3 ? depositWallet1 : depositWallet3;
+        uint256 newMaxBalance = depositWallet1 > depositWallet3 ? depositWallet1 : depositWallet3;
 
         ICryptoBank(address(bank)).setMaxBalance(newMaxBalance);
         assertEq(bank.maxBalance(), newMaxBalance);
 
         vm.prank(wallet1);
-        if(depositWallet1 == 0) vm.expectRevert("Eth amount cannot be Zero");
+        if (depositWallet1 == 0) vm.expectRevert("Eth amount cannot be Zero");
         ICryptoBank(address(bank)).depositEther{value: depositWallet1}();
         assertEq(bank.userBalance(wallet1), depositWallet1);
 
         vm.prank(wallet3);
-        if(depositWallet3 == 0) vm.expectRevert("Eth amount cannot be Zero");
+        if (depositWallet3 == 0) vm.expectRevert("Eth amount cannot be Zero");
         ICryptoBank(address(bank)).depositEther{value: depositWallet3}();
         assertEq(bank.userBalance(wallet3), depositWallet3);
 
